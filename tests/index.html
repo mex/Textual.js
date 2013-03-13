@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.10.0.css">
+    <style type="text/css">
+        .content {
+            width: 600px;
+            margin: 20px auto;
+        }
+
+        .table {
+            width: 100%;
+        }
+
+        .table th, .table td {
+            text-align: center;
+        }
+    </style>
+    <script src="../textual.js"></script>
+    <script src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
+
+    <script type="text/javascript">
+    var str1 = textual('Lorem ipsum');
+    var str2 = str1.clone();
+    str1.append(' dolor sit amet');
+    test('clone', function() {
+        strictEqual(str2.toString(), 'Lorem ipsum');
+        strictEqual(str1.toString(), 'Lorem ipsum dolor sit amet');
+    });
+    test('startsWith', function() {
+        strictEqual(textual('Lorem ipsum').startsWith('Lorem'), true);
+        strictEqual(textual('Lorem ipsum').startsWith('ipsum'), false);
+    });
+    test('endsWith', function() {
+        strictEqual(textual('Lorem ipsum').endsWith('Lorem'), false);
+        strictEqual(textual('Lorem ipsum').endsWith('ipsum'), true);
+    });
+    test('trim', function() {
+        strictEqual(textual(' Lorem ipsum ').trim().toString(), 'Lorem ipsum');
+        strictEqual(textual('\nLorem ipsum\n').trim().toString(), 'Lorem ipsum');
+    });
+    test('toUpperCase', function() {
+        strictEqual(textual('Lorem Ipsum').toUpperCase().toString(), 'LOREM IPSUM');
+        strictEqual(textual('lorem ipsum').toUpperCase().toString(), 'LOREM IPSUM');
+    });
+    test('toLowerCase', function() {
+        strictEqual(textual('Lorem Ipsum').toLowerCase().toString(), 'lorem ipsum');
+        strictEqual(textual('LOREM IPSUM').toLowerCase().toString(), 'lorem ipsum');
+    });
+    test('replace', function() {
+        strictEqual(textual('Lorem ipsum dolor sit amet').replace('ipsum', 'foo'), 'Lorem foo dolor sit amet');
+        strictEqual(textual('Foo bar foo bar foo bar').replace('foo', 'bar'), 'Foo bar bar bar bar bar');
+    });
+    test('equals', function() {
+        strictEqual(textual('Lorem ipsum').equals('Lorem ipsum'), true);
+        strictEqual(textual('Lorem ipsum').equals('lorem ipsum'), false);
+        strictEqual(textual('Lorem ipsum').equals('lorem ipsum', true), true);
+    });
+    test('split', function() {
+        strictEqual(textual('Lorem,ipsum,dolor,sit,amet').split(','), ['Lorem', 'ipsum', 'dolor', 'sit', 'amet']);
+    });
+    </script>
+</head>
+<body>
+<div class="content">
+    <div id="qunit"></div>
+</div>
+</body>
+</html>
