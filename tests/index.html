@@ -22,45 +22,99 @@
     <script src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
 
     <script type="text/javascript">
-    var str1 = textual('Lorem ipsum');
-    var str2 = str1.clone();
-    str1.append(' dolor sit amet');
-    test('clone', function() {
-        strictEqual(str2.toString(), 'Lorem ipsum');
-        strictEqual(str1.toString(), 'Lorem ipsum dolor sit amet');
-    });
-    test('startsWith', function() {
-        strictEqual(textual('Lorem ipsum').startsWith('Lorem'), true);
-        strictEqual(textual('Lorem ipsum').startsWith('ipsum'), false);
-    });
-    test('endsWith', function() {
-        strictEqual(textual('Lorem ipsum').endsWith('Lorem'), false);
-        strictEqual(textual('Lorem ipsum').endsWith('ipsum'), true);
-    });
-    test('trim', function() {
-        strictEqual(textual(' Lorem ipsum ').trim().toString(), 'Lorem ipsum');
-        strictEqual(textual('\nLorem ipsum\n').trim().toString(), 'Lorem ipsum');
-    });
-    test('toUpperCase', function() {
-        strictEqual(textual('Lorem Ipsum').toUpperCase().toString(), 'LOREM IPSUM');
-        strictEqual(textual('lorem ipsum').toUpperCase().toString(), 'LOREM IPSUM');
-    });
-    test('toLowerCase', function() {
-        strictEqual(textual('Lorem Ipsum').toLowerCase().toString(), 'lorem ipsum');
-        strictEqual(textual('LOREM IPSUM').toLowerCase().toString(), 'lorem ipsum');
-    });
-    test('replace', function() {
-        strictEqual(textual('Lorem ipsum dolor sit amet').replace('ipsum', 'foo'), 'Lorem foo dolor sit amet');
-        strictEqual(textual('Foo bar foo bar foo bar').replace('foo', 'bar'), 'Foo bar bar bar bar bar');
-    });
-    test('equals', function() {
-        strictEqual(textual('Lorem ipsum').equals('Lorem ipsum'), true);
-        strictEqual(textual('Lorem ipsum').equals('lorem ipsum'), false);
-        strictEqual(textual('Lorem ipsum').equals('lorem ipsum', true), true);
-    });
-    test('split', function() {
-        strictEqual(textual('Lorem,ipsum,dolor,sit,amet').split(','), ['Lorem', 'ipsum', 'dolor', 'sit', 'amet']);
-    });
+        test('append', function() {
+            strictEqual(textual('Lorem').append(' ipsum'), 'Lorem ipsum');
+            strictEqual(textual('Lorem').append(''), 'Lorem');
+            strictEqual(textual('').append('ipsum'), 'ipsum');
+        });
+        test('prepend', function() {
+            strictEqual(textual('Lorem').prepend('ipsum '), 'ipsum Lorem');
+            strictEqual(textual('Lorem').prepend(''), 'Lorem');
+            strictEqual(textual('').prepend('ipsum'), 'ipsum');
+        });
+        test('clone', function() {
+            var str1 = textual('Lorem ipsum');
+            var str2 = str1;
+            strictEqual(str1 == str2, true);
+            var str2 = str1.clone();
+            strictEqual(str1 == str2, false);
+        });
+        test('startsWith', function() {
+            strictEqual(textual('Lorem ipsum').startsWith('Lorem'), true);
+            strictEqual(textual('Lorem ipsum').startsWith('ipsum'), false);
+            strictEqual(textual('Lorem').startsWith('Lorem ipsum'), false);
+        });
+        test('endsWith', function() {
+            strictEqual(textual('Lorem ipsum').endsWith('Lorem'), false);
+            strictEqual(textual('Lorem ipsum').endsWith('ipsum'), true);
+            strictEqual(textual('Lorem').endsWith('Lorem ipsum'), false);
+        });
+        test('trim', function() {
+            strictEqual(textual(' Lorem ipsum ').trim(), 'Lorem ipsum');
+            strictEqual(textual('\nLorem ipsum\n').trim(), 'Lorem ipsum');
+        });
+        test('toUpperCase', function() {
+            strictEqual(textual('Lorem Ipsum').toUpperCase(), 'LOREM IPSUM');
+            strictEqual(textual('lorem ipsum').toUpperCase(), 'LOREM IPSUM');
+        });
+        test('toLowerCase', function() {
+            strictEqual(textual('Lorem Ipsum').toLowerCase(), 'lorem ipsum');
+            strictEqual(textual('LOREM IPSUM').toLowerCase(), 'lorem ipsum');
+        });
+        test('replace', function() {
+            strictEqual(textual('Lorem ipsum dolor sit amet').replace('ipsum', 'foo'), 'Lorem foo dolor sit amet');
+            strictEqual(textual('Foo bar foo bar foo bar').replace('foo', 'bar'), 'Foo bar bar bar bar bar');
+            strictEqual(textual('Foo bar foo bar foo bar').replace(['f', 'o'], ['m', 'i']), 'Fii bar mii bar mii bar');
+            strictEqual(textual('Foo bar foo bar foo bar').replace(['f', 'o'], ['o', 'g']), 'Fgg bar ggg bar ggg bar');
+            strictEqual(textual('Foo bar foo bar foo bar').replace(['f', 'o'], 'm'), 'Fmm bar mmm bar mmm bar');
+        });
+        test('equals', function() {
+            strictEqual(textual('Lorem ipsum').equals('Lorem ipsum'), true);
+            strictEqual(textual('Lorem ipsum').equals('lorem ipsum'), false);
+            strictEqual(textual('Lorem ipsum').equals('lorem ipsum', true), true);
+        });
+        test('split', function() {
+            var strArray = textual('Lorem,ipsum,dolor,sit,amet').split(',');
+            strictEqual(strArray[0], 'Lorem');
+            strictEqual(strArray[1], 'ipsum');
+            strictEqual(strArray[2], 'dolor');
+            strictEqual(strArray[3], 'sit');
+            strictEqual(strArray[4], 'amet');
+        });
+        test('substring', function() {
+            strictEqual(textual('abcdef').substring(-1), 'f');
+            strictEqual(textual('abcdef').substring(-2), 'ef');
+            strictEqual(textual('abcdef').substring(-3, 1), 'd');
+            strictEqual(textual('abcdef').substring(0, -1), 'abcde');
+            strictEqual(textual('abcdef').substring(2, -1), 'cde');
+            strictEqual(textual('abcdef').substring(4, -4), false);
+            strictEqual(textual('abcdef').substring(-3, -1), 'de');
+            strictEqual(textual('abcdef').substring(1), 'bcdef');
+            strictEqual(textual('abcdef').substring(1, 3), 'bcd');
+            strictEqual(textual('abcdef').substring(0, 4), 'abcd');
+            strictEqual(textual('abcdef').substring(0, 8), 'abcdef');
+            strictEqual(textual('abcdef').substring(-1, 1), 'f');
+        });
+        test('substr', function() {
+            strictEqual(textual('abcdef').substr(-1), 'f');
+            strictEqual(textual('abcdef').substr(-2), 'ef');
+            strictEqual(textual('abcdef').substr(-3, 1), 'd');
+            strictEqual(textual('abcdef').substr(0, -1), 'abcde');
+            strictEqual(textual('abcdef').substr(2, -1), 'cde');
+            strictEqual(textual('abcdef').substr(4, -4), false);
+            strictEqual(textual('abcdef').substr(-3, -1), 'de');
+            strictEqual(textual('abcdef').substr(1), 'bcdef');
+            strictEqual(textual('abcdef').substr(1, 3), 'bcd');
+            strictEqual(textual('abcdef').substr(0, 4), 'abcd');
+            strictEqual(textual('abcdef').substr(0, 8), 'abcdef');
+            strictEqual(textual('abcdef').substr(-1, 1), 'f');
+        });
+        test('pad', function() {
+            strictEqual(textual('Alien').pad(10), 'Alien     ');
+            strictEqual(textual('Alien').pad(10, '-=', textual.PAD_LEFT), '-=-=-Alien');
+            strictEqual(textual('Alien').pad(10, '_', textual.PAD_BOTH), '__Alien___');
+            strictEqual(textual('Alien').pad(6, '___'), 'Alien_');
+        });
     </script>
 </head>
 <body>

@@ -10,7 +10,7 @@
      Constants
      ************************************/
 
-    var numeral,
+    var textual,
         VERSION = '0.1.0',
     // check for nodeJS
         hasModule = (typeof module !== 'undefined' && module.exports);
@@ -36,6 +36,11 @@
     // version number
     textual.version = VERSION;
 
+    // constants
+    textual.PAD_BOTH = 'both';
+    textual.PAD_LEFT = 'left';
+    textual.PAD_RIGHT = 'right';
+
     /************************************
      Helpers
      ************************************/
@@ -58,11 +63,11 @@
         },
 
         append: function(value) {
-            this._s = this._s + value;
+            return this._s + value;
         },
 
         prepend: function(value) {
-            this._s = value + this._s;
+            return value + this._s;
         },
 
         length: function() {
@@ -97,6 +102,19 @@
         },
 
         substring: function(begin, length) {
+            if (begin < 0) {
+                begin += this._s.length;
+            }
+            if (length) {
+                if (length >= 0) {
+                    length += begin;
+                } else {
+                    length += this._s.length;
+                }
+            }
+            if (length < begin) {
+                return false;
+            }
             return this._s.substring(begin, length);
         },
 
@@ -112,11 +130,62 @@
             return this._s.toLocaleLowerCase();
         },
 
-        replace: function(from, to) {
-            while (this._s.indexOf(from) != -1) {
-                this._s = this._s.replace(from, to);
+        _replace: function(str, from, to) {
+            while (str.indexOf(from) != -1) {
+                str = str.replace(from, to);
             }
-            return this._s;
+            return str;
+        },
+
+        replace: function(from, to) {
+            if (Array.isArray(from)) {
+                if (Array.isArray(to)) {
+                    if (from.length != to.length) {
+                        return this._s;
+                    }
+                }
+                var str = this._s;
+                for (var i = 0; i < from.length; i++) {
+                    if (Array.isArray(to)) {
+                        str = this._replace(str, from[i], to[i]);
+                    } else {
+                        str = this._replace(str, from[i], to);
+                    }
+                }
+                return str;
+            } else if (Array.isArray(to)) {
+                return this._s;
+            } else {
+                return this._replace(this._s, from, to);
+            }
+        },
+
+        _pad: function(length, string) {
+            var str = '';
+            for (var i = 0; i < length; i += string.length) {
+                str += string;
+            }
+            return str.substring(0, length);
+        },
+
+        pad: function(length, string, type) {
+            if (length <= this._s.length) {
+                return this._s;
+            }
+            if (!string) {
+                string = ' ';
+            }
+            var left = 0, right = 0;
+            length -= this._s.length;
+            if (type == 'left') {
+                left = length;
+            } else if (type == 'both') {
+                left = Math.floor(length / 2);
+                right = Math.ceil(length / 2);
+            } else {
+                right = length;
+            }
+            return this._pad(left, string) + this._s + this._pad(right, string);
         }
 
     };
